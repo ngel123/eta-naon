@@ -11,7 +11,7 @@
 # Export KERNELDIR as en environment-wide thingy
 # We start in scripts, so like, don't clone things there
 KERNELDIR="$(pwd)"
-SCRIPTS=${KERNELDIR}/scripts
+SCRIPTS=$HOMEscripts
 OUTDIR=${KERNELDIR}/out
 
 # Pick your poison
