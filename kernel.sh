@@ -124,7 +124,7 @@ tg_channelcast "Compiler: <code>${COMPILER_STRING}</code>" \
 	"Commit point: <code>${COMMIT_POINT}</code>" \
 	"Under <code>${CIPROVIDER}, with $(nproc --all) cores</code>" \
 	"Clocked at: <code>$(date +%Y%m%d-%H%M)</code>" \
-	"Started on <code>$(whoami)</code>"
+	"Started on <code>Laptop-Sangar</code>"
 
 # Make is shit so I have to pass thru some toolchains
 # Let's build, anyway
