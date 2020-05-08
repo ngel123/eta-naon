@@ -157,55 +157,6 @@ java -jar zipsigner-3.0.jar ${TEMPZIPNAME} ${ZIPNAME}
 
 "${TELEGRAM}" -f "$ZIPNAME" -c "${CI_CHANNEL}"
 
-cd ..
-
-rm -rf "${ANYKERNEL}"
-git clone https://github.com/Reinazhard/AnyKernel3.git -b master anykernel3
-
-
-
-# Do some silly defconfig replacements
-if [[ "${PARSE_BRANCH}" =~ "staging"* ]]; then
-        # For staging branch
-        KERNELTYPE=nightly
-        KERNELNAME="Zhard-${KERNELRELEASE}-Gabut-${KERNELFW}-$(date +%Y%m%d-%H%M)"
-        sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/whyred_defconfig
-else
-        # Dunno when this will happen but we will cover, just in case
-        KERNELTYPE=${PARSE_BRANCH}
-        KERNELNAME="Zhard-${KERNELRELEASE}-Gabut-${KERNELFW}-$(date +%Y%m%d-%H%M)"
-        sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/whyred_defconfig
-fi
-
-export KERNELTYPE KERNELNAME
-
-export TEMPZIPNAME="${KERNELNAME}-unsigned.zip"
-export ZIPNAME="${KERNELNAME}.zip"
-make O=out ARCH=arm64 whyred_defconfig
-make -j$(nproc --all) O=out ARCH=arm64 CLANG_TRIPLE=aarch64-maestro-linux-gnu-
-
-## Check if compilation is done successfully.
-if ! [ -f "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb ]; then
-	END=$(date +"%s")
-	DIFF=$(( END - START ))
-        echo -e "Build Failed !! LMAO, See buildlog to fix errors"
-        tg_channelcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors!"
-        tg_groupcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors @eve_enryu"
-        exit 1
-fi
-
-# Copy our !!hopefully!! compiled kernel
-cp "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb "${ANYKERNEL}"/
-
-# POST ZIP OR FAILURE
-cd "${ANYKERNEL}" || exit
-zip -r9 "${TEMPZIPNAME}" *
-
-## Sign the zip before sending it to telegram
-curl -sLo zipsigner-3.0.jar https://raw.githubusercontent.com/baalajimaestro/AnyKernel2/master/zipsigner-3.0.jar
-java -jar zipsigner-3.0.jar ${TEMPZIPNAME} ${ZIPNAME}
-
-"${TELEGRAM}" -f "$ZIPNAME" -c "${CI_CHANNEL}"
 
 END=$(date +"%s")
 DIFF=$(( END - START ))
