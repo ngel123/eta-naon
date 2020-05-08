@@ -29,9 +29,7 @@ fi
 # Run oh-my-zsh installer unatteneded
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 
-# Clone in my aliases
-git clone https://github.com/nysascape/aliases ~/.aliases
-echo "source ~/.aliases/aliases" >> ~/.zshrc
+
 
 # Powerlevel10k
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/custom/themes/powerlevel10k
@@ -40,16 +38,11 @@ git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/cu
 sed -i 's/plugins=(git)/plugins=(git cp gpg-agent)/g' ~/.zshrc
 
 # Git configurations
-git config --global user.name "nysascape"
-git config --global user.email "jago@nysascape.digital"
+git config --global user.name "Reinazhard"
+git config --global user.email "muh.alfarozy@gmail.com"
 git config --global credential.helper store
 git config --global commit.gpgsign true
 git config --global user.signingkey "A15571E738CE3CD4"
 
-# GCC 9 is always a good thing to have
-git clone https://github.com/arter97/arm64-gcc --depth=1 ~/gcc9
-git clone https://github.com/arter97/arm32-gcc --depth=1 ~/gcc932
 
-# Add my hooks
-git clone https://github.com/nysascape/githooks ~/.git/hooks/
-git config --global core.hooksPath ~/.git/hooks
+
