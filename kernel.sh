@@ -27,21 +27,21 @@ function cleanupfail2
         git reset --hard HEAD~2
 }
 
-ACRUXPATH=$1
-KERNELRELEASE=$2
+ACRUXPATH=home/reina/zhard
+KERNELRELEASE=HMP
 SCRIPTSPATH=$(pwd)
 OUTDIR=${ACRUXPATH}/out
 
 # Make sure our fekking token is exported ig?
-export TELEGRAM_TOKEN=$3
+export TELEGRAM_TOKEN=$tgtoken
 
 # Some misc enviroment vars
-DEVICE=Platina
+DEVICE=whyred
 CIPROVIDER=Local
-KERNELFW=Global
+KERNELFW=HMP
 
 # Clone our AnyKernel3 branch to KERNELDIR
-git clone https://github.com/nysascape/AnyKernel3 -b master ${ACRUXPATH}/anykernel3
+git clone https://github.com/Reinazhard/AnyKernel3 -b master ${ACRUXPATH}/anykernel3
 export ANYKERNEL=${ACRUXPATH}/anykernel3
 
 git clone https://github.com/fabianonline/telegram.sh/ telegram
@@ -54,8 +54,8 @@ TELEGRAM=${SCRIPTSPATH}/telegram/telegram
 CPU="$(grep -c '^processor' /proc/cpuinfo)"
 JOBS="$(( CPU * 2 ))"
 
-COMPILER_STRING='GCC 9.x'
-COMPILER_TYPE='GCC9.x'
+COMPILER_STRING='MAESTRO GCC 9.x'
+COMPILER_TYPE='MAESTRO-GCC9.x'
 
 cd ${ACRUXPATH}
 
@@ -68,21 +68,17 @@ PARSE_ORIGIN="$(git config --get remote.origin.url)"
 COMMIT_POINT="$(git log --pretty=format:'%h : %s' -1)"
 
 # Do some silly defconfig replacements
-if [[ "${PARSE_BRANCH}" =~ "staging"* ]]; then
+if [[ "${PARSE_BRANCH}" =~ "reina"* ]]; then
 	# For staging branch
-	KERNELTYPE=nightly
-	KERNELNAME="Acrux-${KERNELRELEASE}-Nightly-${KERNELFW}-$(date +%Y%m%d-%H%M)"
-	sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
-elif [[ "${PARSE_BRANCH}" =~ "pie"* ]]; then
-	# For stable (pie) branch
-	KERNELTYPE=stable
-	KERNELNAME="Acrux-${KERNELRELEASE}-Release-${KERNELFW}-$(date +%Y%m%d-%H%M)"
-        sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
+	KERNELTYPE=GABUT
+	KERNELNAME="-ZHARD-${KERNELRELEASE}-Gabut-${KERNELFW}-$(date +%Y%m%d-%H%M)"
+	sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/whyred_defconfig
+
 else
 	# Dunno when this will happen but we will cover, just in case
 	KERNELTYPE=${PARSE_BRANCH}
-	KERNELNAME="Acrux-${KERNELRELEASE}-${PARSE_BRANCH}-${KERNELFW}-$(date +%Y%m%d-%H%M)"
-        sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
+	KERNELNAME="ZHARD-${KERNELRELEASE}-Gabut-${KERNELFW}-$(date +%Y%m%d-%H%M)"
+        sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/whyred_defconfig
 fi
 
 export KERNELTYPE KERNELNAME
@@ -120,10 +116,10 @@ tg_channelcast() {
 }
 
 # Let's announce our naisu new kernel!
-tg_groupcast "Acrux compilation clocked at $(date +%Y%m%d-%H%M)!"
+tg_groupcast "Zhard compilation clocked at $(date +%Y%m%d-%H%M)!"
 tg_channelcast "Compiler: <code>${COMPILER_STRING}</code>" \
 	"Device: <b>${DEVICE}</b>" \
-	"Kernel: <code>Acrux, release ${KERNELRELEASE}</code>" \
+	"Kernel: <code>ZHARD, release ${KERNELRELEASE}</code>" \
 	"Branch: <code>${PARSE_BRANCH}</code>" \
 	"Commit point: <code>${COMMIT_POINT}</code>" \
 	"Under <code>${CIPROVIDER}, with $(nproc --all) cores</code>" \
@@ -135,17 +131,16 @@ tg_channelcast "Compiler: <code>${COMPILER_STRING}</code>" \
 PATH="${KERNELDIR}/clang/bin:${PATH}"
 START=$(date +"%s")
 
-make O=out ARCH=arm64 acrux_defconfig
-make -j"${JOBS}" O=out ARCH=arm64 CROSS_COMPILE="/home/$(whoami)/gcc9/bin/aarch64-elf-" CROSS_COMPILE_ARM32="/home/$(whoami)gcc932/bin/arm-eabi-"
+make O=out ARCH=arm64 whyred_defconfig
+make -j"${JOBS}" O=out ARCH=arm64 CLANG_TRIPLE=aarch64-maestro-linux-gnu-
 
 ## Check if compilation is done successfully.
 if ! [ -f "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb ]; then
 	END=$(date +"%s")
 	DIFF=$(( END - START ))
-	echo -e "Kernel compilation failed, See buildlog to fix errors"
+	echo -e "BUild Failed LMAO !!, See buildlog to fix errors"
 	tg_channelcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors!"
-	tg_groupcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors @nysascape! @acruxci"
-	cleanupfail1
+	tg_groupcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors @eve_enryu"
 	exit 1
 fi
 
@@ -165,46 +160,37 @@ java -jar zipsigner-3.0.jar ${TEMPZIPNAME} ${ZIPNAME}
 cd ..
 
 rm -rf "${ANYKERNEL}"
-git clone https://github.com/nysascape/Acrux-AK3 -b master anykernel3
+git clone https://github.com/Reinazhard/AnyKernel3.git -b master anykernel3
 
-# Build China fixes
-KERNELFW=China
-git fetch https://github.com/nysascape/kernel_xiaomi_acrux oem
-git cherry-pick dc8e417a8d54d8c0893f19b97fb448d2a72b058d
+
 
 # Do some silly defconfig replacements
 if [[ "${PARSE_BRANCH}" =~ "staging"* ]]; then
         # For staging branch
         KERNELTYPE=nightly
-        KERNELNAME="Acrux-${KERNELRELEASE}-Nightly-${KERNELFW}-$(date +%Y%m%d-%H%M)"
-        sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
-elif [[ "${PARSE_BRANCH}" =~ "pie"* ]]; then
-        # For stable (pie) branch
-        KERNELTYPE=stable
-        KERNELNAME="Acrux-${KERNELRELEASE}-Release-${KERNELFW}-$(date +%Y%m%d-%H%M)"
-        sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
+        KERNELNAME="Zhard-${KERNELRELEASE}-Gabut-${KERNELFW}-$(date +%Y%m%d-%H%M)"
+        sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/whyred_defconfig
 else
         # Dunno when this will happen but we will cover, just in case
         KERNELTYPE=${PARSE_BRANCH}
-        KERNELNAME="Acrux-${KERNELRELEASE}-${PARSE_BRANCH}-${KERNELFW}-$(date +%Y%m%d-%H%M)"
-        sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
+        KERNELNAME="Zhard-${KERNELRELEASE}-Gabut-${KERNELFW}-$(date +%Y%m%d-%H%M)"
+        sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/whyred_defconfig
 fi
 
 export KERNELTYPE KERNELNAME
 
 export TEMPZIPNAME="${KERNELNAME}-unsigned.zip"
 export ZIPNAME="${KERNELNAME}.zip"
-make O=out ARCH=arm64 acrux_defconfig
-make -j"${JOBS}" O=out ARCH=arm64 CROSS_COMPILE="/home/$(whoami)/gcc9/bin/aarch64-elf-" CROSS_COMPILE_ARM32="/home/$(whoami)/gcc932/bin/arm-eabi-"
+make O=out ARCH=arm64 whyred_defconfig
+make -j$(nproc --all) O=out ARCH=arm64 CLANG_TRIPLE=aarch64-maestro-linux-gnu-
 
 ## Check if compilation is done successfully.
 if ! [ -f "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb ]; then
 	END=$(date +"%s")
 	DIFF=$(( END - START ))
-        echo -e "Kernel compilation failed !!(FOR CHINA FW)!!, See buildlog to fix errors"
+        echo -e "Build Failed !! LMAO, See buildlog to fix errors"
         tg_channelcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors!"
-        tg_groupcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors @nysascape! @acruxci"
-	cleanupfail2
+        tg_groupcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors @eve_enryu"
         exit 1
 fi
 
@@ -224,6 +210,6 @@ java -jar zipsigner-3.0.jar ${TEMPZIPNAME} ${ZIPNAME}
 END=$(date +"%s")
 DIFF=$(( END - START ))
 tg_channelcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)!"
-tg_groupcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! @acruxci"
+tg_groupcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! "
 
-cleanupfail2
+
