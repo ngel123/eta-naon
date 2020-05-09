@@ -7,13 +7,13 @@
 # CI build script
 
 # Needed exports
-export TELEGRAM_TOKEN=1176154929:AAEwBruEeSm92J2VgHGrLuJroL4oKkd0j-k
+export TELEGRAM_TOKEN=${BOT_API_TOKEN}
 export ANYKERNEL=$(pwd)/anykernel3
 
 # Avoid hardcoding things
-KERNEL=Zhard
-DEFCONFIG=whyred_defconfig
-DEVICE=Whyred
+KERNEL=Acrux
+DEFCONFIG=acrux_defconfig
+DEVICE=Platina
 CIPROVIDER=CircleCI
 KERNELFW=Global
 PARSE_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
@@ -21,35 +21,39 @@ PARSE_ORIGIN="$(git config --get remote.origin.url)"
 COMMIT_POINT="$(git log --pretty=format:'%h : %s' -1)"
 
 # Kernel groups
-CI_CHANNEL=-1001174078190
-TG_GROUP=-1001347410949
+CI_CHANNEL=-1001420038245
+TG_GROUP=-1001435271206
 
 # Clang is annoying
 PATH="${KERNELDIR}/clang/bin:${PATH}"
 
 # Kernel revision
-KERNELRELEASE=HMP
+KERNELRELEASE=v2
 
 # Function to replace defconfig versioning
 setversioning() {
-    if [[ "${PARSE_BRANCH}" =~ "reina-newcam"* ]]; then
+    if [[ "${PARSE_BRANCH}" =~ "staging"* ]]; then
     	# For staging branch
-	    KERNELTYPE=Gabut
-	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-NewCam-$(date +%y%m%d-%H%M)"
+	    KERNELTYPE=nightly
+	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-Nightly-${KERNELFW}-$(date +%y%m%d-%H%M)"
 	    sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
-    
-    elif [[ "${PARSE_BRANCH}" =~ "reina"* ]]; then
-    	# For staging branch
-	    KERNELTYPE=Gabut
-	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-OldCam-$(date +%y%m%d-%H%M)"
-	    sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
+    elif [[ "${PARSE_BRANCH}" =~ "ten"* ]]; then
+	    # For stable (ten) branch
+	    KERNELTYPE=stable
+	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-Release-${KERNELFW}-$(date +%y%m%d-%H%M)"
+        sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
+    else
+	    # Dunno when this will happen but we will cover, just in case
+	    KERNELTYPE=${PARSE_BRANCH}
+	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-${PARSE_BRANCH}-${KERNELFW}-$(date +%y%m%d-%H%M)"
+        sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
+    fi
 
     # Export our new localversion and zipnames
     export KERNELTYPE KERNELNAME
     export TEMPZIPNAME="${KERNELNAME}-unsigned.zip"
     export ZIPNAME="${KERNELNAME}.zip"
 }
-
 
 # Send to main group
 tg_groupcast() {
@@ -71,15 +75,10 @@ tg_channelcast() {
     )"
 }
 
-# Switch to another branch
-switchnew() {
-    git checkout reina-newcam
-}
-
 # Fix long kernel strings
 kernelstringfix() {
-    git config --global user.name "Reinazhard"
-    git config --global user.email "muh.alfarozy@gmail.com"
+    git config --global user.name "nysascape"
+    git config --global user.email "nysadev@raphielgang.org"
     git add .
     git commit -m "stop adding dirty"
 }
@@ -88,30 +87,25 @@ kernelstringfix() {
 makekernel() {
     # Clean any old AnyKernel
     rm -rf ${ANYKERNEL}
-    git clone https://github.com/Reinazhard/AnyKernel3 -b master anykernel3
+    git clone https://github.com/nysascape/AnyKernel3 -b master anykernel3
     kernelstringfix
-    export CROSS_COMPILE="${KERNELDIR}/gcc/bin/aarch64-maestro-linux-gnu-"
-    export CROSS_COMPILE_ARM32="${KERNELDIR}/gcc32/bin/arm-maestro-linux-gnueabi-"
-    export ARCH=arm64
-    export SUBARCH=arm64
     make O=out ARCH=arm64 ${DEFCONFIG}
     if [[ "${COMPILER_TYPE}" =~ "clang"* ]]; then
-        make -j$(nproc --all) CC=clang O=out ARCH=arm64 CLANG_TRIPLE=aarch64-maestro-linux-gnu-
+        make -j$(nproc --all) CC=clang CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- O=out ARCH=arm64
     else
-	    make -j$(nproc --all) O=out ARCH=arm64 CROSS_COMPILE="${KERNELDIR}/gcc/bin/aarch64-maestro-linux-gnu-" CROSS_COMPILE_ARM32="${KERNELDIR}/gcc32/bin/arm-maestro-linux-gnueabi-"
+	    make -j$(nproc --all) O=out ARCH=arm64 CROSS_COMPILE="${KERNELDIR}/gcc/bin/aarch64-elf-" CROSS_COMPILE_ARM32="${KERNELDIR}/gcc32/bin/arm-eabi-"
     fi
 
     # Check if compilation is done successfully.
     if ! [ -f "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb ]; then
 	    END=$(date +"%s")
 	    DIFF=$(( END - START ))
-	    echo -e "Build Failed LMAO !!, See buildlog to fix errors"
+	    echo -e "Kernel compilation failed, See buildlog to fix errors"
 	    tg_channelcast "Build for ${DEVICE} (${KERNELFW}) <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors!"
-	    tg_groupcast "Build for ${DEVICE} (${KERNELFW}) <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors @eve_enryu @reinazhardci"
+	    tg_groupcast "Build for ${DEVICE} (${KERNELFW}) <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors @nysascape! @nysaci"
 	    exit 1
     fi
 }
-
 
 # Ship the compiled kernel
 shipkernel() {
@@ -133,12 +127,12 @@ shipkernel() {
     cd ..
 }
 
-# Clear Out dir
-clearout() {
-    rm -rf out
-    mkdir -p out
+# Ship China firmware builds
+setchinafw() {
+    export KERNELFW=China
+    # Pick DSP change
+    git cherry-pick 23dda5dd32a62488862985d7efc9d148e7f527f5
 }
-
 
 # Fix for CI builds running out of memory
 fixcilto() {
@@ -159,13 +153,11 @@ tg_channelcast "Compiler: <code>${COMPILER_STRING}</code>" \
 START=$(date +"%s")
 makekernel || exit 1
 shipkernel
-clearout
-switchnew
+setchinafw
 setversioning
-clearout
 makekernel || exit 1
 shipkernel
 END=$(date +"%s")
 DIFF=$(( END - START ))
 tg_channelcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)!"
-tg_groupcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! @reinazhardci"
+tg_groupcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! @nysaci"
