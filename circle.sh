@@ -137,6 +137,15 @@ clearout() {
     mkdir -p out
 }
 
+#Setver 2 for newcam
+setver2() {
+    KERNELNAME="${KERNEL}-${KERNELRELEASE}-NewCam-$(date +%y%m%d-%H%M)"
+    sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
+    export KERNELTYPE KERNELNAME
+    export TEMPZIPNAME="${KERNELNAME}-unsigned.zip"
+    export ZIPNAME="${KERNELNAME}.zip"
+}
+
 # Fix for CI builds running out of memory
 fixcilto() {
     sed -i 's/CONFIG_LTO=y/# CONFIG_LTO is not set/g' arch/arm64/configs/${DEFCONFIG}
@@ -157,7 +166,7 @@ START=$(date +"%s")
 makekernel || exit 1
 shipkernel
 setnewcam
-setversioning
+setver2
 clearout
 makekernel || exit 1
 shipkernel
