@@ -134,8 +134,8 @@ shipkernel() {
 
 # Clear Out dir
 clearout() {
-	rm -rf out
-	mkdir -p out
+    rm -rf out
+    mkdir -p out
 }
 
 
