@@ -40,7 +40,7 @@ setversioning() {
     elif [[ "${PARSE_BRANCH}" =~ "reina-newcam"* ]]; then
 	    # For stable (ten) branch
 	    KERNELTYPE=Gabut
-	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-NewCam-$(date +%y%m%d-%H%M)"
+	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-${CAMLIBS}-$(date +%y%m%d-%H%M)"
         sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
     fi
     # Export our new localversion and zipnames
@@ -125,6 +125,7 @@ shipkernel() {
 
 # Ship China firmware builds
 setnewcam() {
+    export CAMLIBS=NewCam
     # Pick DSP change
     git cherry-pick 549aa793898b19b17f3a9e7732273d2f6607b3a7
 }
@@ -155,7 +156,7 @@ tg_channelcast "Compiler: <code>${COMPILER_STRING}</code>" \
 START=$(date +"%s")
 makekernel || exit 1
 shipkernel
-setchinafw
+setnewcam
 setversioning
 makekernel || exit 1
 shipkernel
