@@ -47,7 +47,8 @@ setversioning() {
     # Export our new localversion and zipnames
     export KERNELTYPE KERNELNAME
     export TEMPZIPNAME="${KERNELNAME}-unsigned.zip"
-    export ZIPNAME="${KERNELNAME}.zip"}
+    export ZIPNAME="${KERNELNAME}.zip"
+}
 
 
 # Send to main group
