@@ -43,13 +43,6 @@ setversioning() {
 	    KERNELTYPE=Gabut
 	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-OldCam-$(date +%y%m%d-%H%M)"
 	    sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
-    
-    else
-	    # Dunno when this will happen but we will cover, just in case
-	    KERNELTYPE=${PARSE_BRANCH}
-	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-OldCam-$(date +%y%m%d-%H%M)"
-        sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
-    fi
 
     # Export our new localversion and zipnames
     export KERNELTYPE KERNELNAME
@@ -139,6 +132,11 @@ shipkernel() {
     cd ..
 }
 
+# Clear Out dir
+clearout() {
+	rm -rf out
+	mkdir -p out
+}
 
 
 # Fix for CI builds running out of memory
