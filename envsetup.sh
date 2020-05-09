@@ -13,9 +13,7 @@
 KERNELDIR="$(pwd)"
 SCRIPTS=${KERNELDIR}/kernelscripts
 OUTDIR=${KERNELDIR}/out
-
-# Pick your poison
-if [[ "$*" =~ "clang"* ]]; then
+       
         git clone https://github.com/Haseo97/Avalon-Clang-11.0.1.git --depth=1 "${KERNELDIR}"/clang
         COMPILER_STRING='Avalon Clang (latest)'
 	COMPILER_TYPE='clang'
