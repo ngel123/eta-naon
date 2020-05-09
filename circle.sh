@@ -37,6 +37,13 @@ setversioning() {
 	    KERNELTYPE=Gabut
 	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-NewCam-$(date +%y%m%d-%H%M)"
 	    sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
+    
+    elif [[ "${PARSE_BRANCH}" =~ "reina"* ]]; then
+    	# For staging branch
+	    KERNELTYPE=Gabut
+	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-OldCam-$(date +%y%m%d-%H%M)"
+	    sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
+    
     else
 	    # Dunno when this will happen but we will cover, just in case
 	    KERNELTYPE=${PARSE_BRANCH}
@@ -68,6 +75,11 @@ tg_channelcast() {
 			echo "${POST}"
 		done
     )"
+}
+
+# Switch to another branch
+switchnew() {
+    git checkout reina-newcam
 }
 
 # Fix long kernel strings
@@ -105,6 +117,7 @@ makekernel() {
 	    exit 1
     fi
 }
+
 
 # Ship the compiled kernel
 shipkernel() {
@@ -147,8 +160,9 @@ tg_channelcast "Compiler: <code>${COMPILER_STRING}</code>" \
 START=$(date +"%s")
 makekernel || exit 1
 shipkernel
+switchnew
 setversioning
-makekernel || exit 1
+makekernel2 || exit 1
 shipkernel
 END=$(date +"%s")
 DIFF=$(( END - START ))
