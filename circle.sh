@@ -28,6 +28,10 @@ export KBUILD_BUILD_HOST=Laptop-Sangar
 CI_CHANNEL=-1001174078190
 TG_GROUP=-1001347410949
 
+#Datetime
+DATE=$(TZ=Asia/Jakarta date +"%Y%m%d-%T")
+BUILD_DATE=$(date +"%Y-%m-%d"-%H%M)
+
 # Clang is annoying
 PATH="${KERNELDIR}/clang/bin:$PATH"
 
@@ -39,12 +43,12 @@ setversioning() {
     if [[ "${PARSE_BRANCH}" =~ "reina"* ]]; then
     	# For staging branch
 	    KERNELTYPE=Gabut
-	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-OldCam-$(date +%y%m%d)"
+	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-OldCam-${BUILD_DATE}"
 	    sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
     elif [[ "${PARSE_BRANCH}" =~ "reina-newcam"* ]]; then
 	    # For stable (ten) branch
 	    KERNELTYPE=Gabut
-	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-${CAMLIBS}-$(date +%y%m%d)"
+	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-${CAMLIBS}-${BUILD_DATE}"
         sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
     fi
     # Export our new localversion and zipnames
@@ -87,12 +91,9 @@ makekernel() {
     rm -rf ${ANYKERNEL}
     git clone https://github.com/Reinazhard/AnyKernel3 -b master anykernel3
     kernelstringfix
-    export CROSS_COMPILE="${KERNELDIR}/gcc/bin/aarch64-maestro-linux-gnu-"
-    export CROSS_COMPILE_ARM32="${KERNELDIR}/gcc32/bin/arm-maestro-linux-gnueabi-"
     export PATH="${KERNELDIR}/clang/bin:$PATH"
     make O=out ARCH=arm64 ${DEFCONFIG}
-    make -j$(nproc --all) CC=clang O=out ARCH=arm64 CLANG_TRIPLE=aarch64-maestro-linux-gnu-
-
+    make -j$(nproc --all) CC=clang O=out ARCH=arm64 CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi-
     # Check if compilation is done successfully.
     if ! [ -f "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb ]; then
 	    END=$(date +"%s")
