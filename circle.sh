@@ -158,8 +158,10 @@ tg_channelcast "Compiler: <code>${COMPILER_STRING}</code>" \
 START=$(date +"%s")
 makekernel || exit 1
 shipkernel
+clearout
 switchnew
 setversioning
+clearout
 makekernel || exit 1
 shipkernel
 END=$(date +"%s")
