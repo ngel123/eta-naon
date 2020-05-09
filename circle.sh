@@ -22,14 +22,14 @@ COMMIT_POINT="$(git log --pretty=format:'%h : %s' -1)"
 
 #Kearipan Lokal
 export KBUILD_BUILD_USER=reina
-expottKBUILD_BUILD_HOST=Laptop-Sangar
+export KBUILD_BUILD_HOST=Laptop-Sangar
 
 # Kernel groups
 CI_CHANNEL=-1001174078190
 TG_GROUP=-1001347410949
 
 # Clang is annoying
-PATH="${KERNELDIR}/clang/bin:${PATH}"
+PATH="${KERNELDIR}/clang/bin:$PATH"
 
 # Kernel revision
 KERNELRELEASE=HMP
@@ -39,12 +39,12 @@ setversioning() {
     if [[ "${PARSE_BRANCH}" =~ "reina"* ]]; then
     	# For staging branch
 	    KERNELTYPE=Gabut
-	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-OldCam-$(date +%y%m%d-%H%M)"
+	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-OldCam-$(date +%y%m%d)"
 	    sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
     elif [[ "${PARSE_BRANCH}" =~ "reina-newcam"* ]]; then
 	    # For stable (ten) branch
 	    KERNELTYPE=Gabut
-	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-${CAMLIBS}-$(date +%y%m%d-%H%M)"
+	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-${CAMLIBS}-$(date +%y%m%d)"
         sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
     fi
     # Export our new localversion and zipnames
@@ -98,8 +98,8 @@ makekernel() {
 	    END=$(date +"%s")
 	    DIFF=$(( END - START ))
 	    echo -e "build Failed LMAO !!, See buildlog to fix errors"
-	    tg_channelcast "Build for ${DEVICE} (${KERNELFW}) <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors!"
-	    tg_groupcast "Build for ${DEVICE} (${KERNELFW}) <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors @eve_enryu @reinazhardci"
+	    tg_channelcast "Build for ${DEVICE} (${KERNELFW}) <b>Failed LMAO</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors!"
+	    tg_groupcast "Build for ${DEVICE} (${KERNELFW}) <b>Failed LMAO</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors @eve_enryu @reinazhardci"
 	    exit 1
     fi
 }
@@ -140,7 +140,7 @@ clearout() {
 
 #Setver 2 for newcam
 setver2() {
-    KERNELNAME="${KERNEL}-${KERNELRELEASE}-NewCam-$(date +%y%m%d-%H%M)"
+    KERNELNAME="${KERNEL}-${KERNELRELEASE}-NewCam-$(date +%y%m%d)"
     sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
     export KERNELTYPE KERNELNAME
     export TEMPZIPNAME="${KERNELNAME}-unsigned.zip"
@@ -156,7 +156,7 @@ fixcilto() {
 ## Start the kernel buildflow ##
 setversioning
 fixcilto
-tg_groupcast "${KERNEL} compilation clocked at $(date +%Y%m%d-%H%M)!"
+tg_groupcast "${KERNEL} compilation started at $(date +%Y%m%d-%H%M)!"
 tg_channelcast "Compiler: <code>${COMPILER_STRING}</code>" \
 	"Device: <b>${DEVICE}</b>" \
 	"Kernel: <code>${KERNEL}, release ${KERNELRELEASE}</code>" \
