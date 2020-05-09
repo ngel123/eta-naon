@@ -16,13 +16,13 @@ OUTDIR=${KERNELDIR}/out
 
 # Pick your poison
 if [[ "$*" =~ "clang"* ]]; then
-        git clone https://github.com/kdrag0n/proton-clang --depth=1 "${KERNELDIR}"/clang
-        COMPILER_STRING='Proton Clang (latest)'
+        git clone https://github.com/Haseo97/Avalon-Clang-11.0.1.git --depth=1 "${KERNELDIR}"/clang
+        COMPILER_STRING='Avalon Clang (latest)'
 	COMPILER_TYPE='clang'
 else
         # Default to GCC from Arter
-        git clone https://github.com/arter97/arm64-gcc --depth=1 "${KERNELDIR}/gcc"
-        git clone https://github.com/arter97/arm32-gcc --depth=1 "${KERNELDIR}/gcc32"
+        git clone https://github.com/baalajimaestro/arm-maestro-linux-gnueabi.git --depth=1 -b 05022020-9.2.1 "${KERNELDIR}/gcc32"
+        git clone https://github.com/baalajimaestro/aarch64-maestro-linux-android.git --depth=1 -b 05022020-9.2.1 "${KERNELDIR}/gcc"
         COMPILER_STRING='GCC 9.x'
 	COMPILER_TYPE='GCC9.x'
 fi
