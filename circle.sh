@@ -20,6 +20,10 @@ PARSE_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 PARSE_ORIGIN="$(git config --get remote.origin.url)"
 COMMIT_POINT="$(git log --pretty=format:'%h : %s' -1)"
 
+#Kearipan Lokal
+export KBUILD_BUILD_USER=reina
+expottKBUILD_BUILD_HOST=Laptop-Sangar
+
 # Kernel groups
 CI_CHANNEL=-1001174078190
 TG_GROUP=-1001347410949
@@ -85,6 +89,7 @@ makekernel() {
     kernelstringfix
     export CROSS_COMPILE="${KERNELDIR}/gcc/bin/aarch64-maestro-linux-gnu-"
     export CROSS_COMPILE_ARM32="${KERNELDIR}/gcc32/bin/arm-maestro-linux-gnueabi-"
+    export PATH="${KERNELDIR}/clang/bin:$PATH"
     make O=out ARCH=arm64 ${DEFCONFIG}
     if [[ "${COMPILER_TYPE}" =~ "clang"* ]]; then
         make -j$(nproc --all) CC=clang O=out ARCH=arm64 CLANG_TRIPLE=aarch64-maestro-linux-gnu-
