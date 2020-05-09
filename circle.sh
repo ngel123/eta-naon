@@ -162,7 +162,7 @@ makekernel || exit 1
 shipkernel
 switchnew
 setversioning
-makekernel2 || exit 1
+makekernel || exit 1
 shipkernel
 END=$(date +"%s")
 DIFF=$(( END - START ))
