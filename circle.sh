@@ -7,13 +7,13 @@
 # CI build script
 
 # Needed exports
-export TELEGRAM_TOKEN=${BOT_API_TOKEN}
+export TELEGRAM_TOKEN=1176154929:AAEwBruEeSm92J2VgHGrLuJroL4oKkd0j-k
 export ANYKERNEL=$(pwd)/anykernel3
 
 # Avoid hardcoding things
-KERNEL=Acrux
-DEFCONFIG=acrux_defconfig
-DEVICE=Platina
+KERNEL=Zhard
+DEFCONFIG=whyred_defconfig
+DEVICE=Whyred
 CIPROVIDER=CircleCI
 KERNELFW=Global
 PARSE_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
@@ -21,34 +21,28 @@ PARSE_ORIGIN="$(git config --get remote.origin.url)"
 COMMIT_POINT="$(git log --pretty=format:'%h : %s' -1)"
 
 # Kernel groups
-CI_CHANNEL=-1001420038245
-TG_GROUP=-1001435271206
+CI_CHANNEL=-1001174078190
+TG_GROUP=-1001347410949
 
 # Clang is annoying
 PATH="${KERNELDIR}/clang/bin:${PATH}"
 
 # Kernel revision
-KERNELRELEASE=v2
+KERNELRELEASE=HMP
 
 # Function to replace defconfig versioning
 setversioning() {
-    if [[ "${PARSE_BRANCH}" =~ "staging"* ]]; then
+    if [[ "${PARSE_BRANCH}" =~ "reina"* ]]; then
     	# For staging branch
-	    KERNELTYPE=nightly
-	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-Nightly-${KERNELFW}-$(date +%y%m%d-%H%M)"
+	    KERNELTYPE=Gabut
+	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-OldCam-$(date +%y%m%d-%H%M)"
 	    sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
-    elif [[ "${PARSE_BRANCH}" =~ "ten"* ]]; then
+    elif [[ "${PARSE_BRANCH}" =~ "reina-newcam"* ]]; then
 	    # For stable (ten) branch
-	    KERNELTYPE=stable
-	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-Release-${KERNELFW}-$(date +%y%m%d-%H%M)"
+	    KERNELTYPE=Gabut
+	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-NewCam-$(date +%y%m%d-%H%M)"
         sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
-    else
-	    # Dunno when this will happen but we will cover, just in case
-	    KERNELTYPE=${PARSE_BRANCH}
-	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-${PARSE_BRANCH}-${KERNELFW}-$(date +%y%m%d-%H%M)"
-        sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
-    fi
-
+    
     # Export our new localversion and zipnames
     export KERNELTYPE KERNELNAME
     export TEMPZIPNAME="${KERNELNAME}-unsigned.zip"
@@ -77,8 +71,8 @@ tg_channelcast() {
 
 # Fix long kernel strings
 kernelstringfix() {
-    git config --global user.name "nysascape"
-    git config --global user.email "nysadev@raphielgang.org"
+    git config --global user.name "Reinazhard"
+    git config --global user.email "muh.alfarozy@gmail.com"
     git add .
     git commit -m "stop adding dirty"
 }
@@ -91,18 +85,18 @@ makekernel() {
     kernelstringfix
     make O=out ARCH=arm64 ${DEFCONFIG}
     if [[ "${COMPILER_TYPE}" =~ "clang"* ]]; then
-        make -j$(nproc --all) CC=clang CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- O=out ARCH=arm64
+        make -j$(nproc --all) CC=clang O=out ARCH=arm64 CLANG_TRIPLE=aarch64-maestro-linux-gnu-
     else
-	    make -j$(nproc --all) O=out ARCH=arm64 CROSS_COMPILE="${KERNELDIR}/gcc/bin/aarch64-elf-" CROSS_COMPILE_ARM32="${KERNELDIR}/gcc32/bin/arm-eabi-"
+	    make -j$(nproc --all) O=out ARCH=arm64 CROSS_COMPILE="${KERNELDIR}/gcc/bin/aarch64-maestro-linux-gnu-" CROSS_COMPILE_ARM32="${KERNELDIR}/gcc32/bin/arm-maestro-linux-gnu-"
     fi
 
     # Check if compilation is done successfully.
     if ! [ -f "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb ]; then
 	    END=$(date +"%s")
 	    DIFF=$(( END - START ))
-	    echo -e "Kernel compilation failed, See buildlog to fix errors"
+	    echo -e "build Failed LMAO !!, See buildlog to fix errors"
 	    tg_channelcast "Build for ${DEVICE} (${KERNELFW}) <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors!"
-	    tg_groupcast "Build for ${DEVICE} (${KERNELFW}) <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors @nysascape! @nysaci"
+	    tg_groupcast "Build for ${DEVICE} (${KERNELFW}) <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors @eve_enryu @reinazhardci"
 	    exit 1
     fi
 }
@@ -128,10 +122,16 @@ shipkernel() {
 }
 
 # Ship China firmware builds
-setchinafw() {
-    export KERNELFW=China
+setnewcam() {
     # Pick DSP change
-    git cherry-pick 23dda5dd32a62488862985d7efc9d148e7f527f5
+    git cherry-pick 549aa793898b19b17f3a9e7732273d2f6607b3a7
+}
+
+# Ship China firmware builds
+clearout() {
+    # Pick DSP change
+    rm -rf out
+    mkdir -p out
 }
 
 # Fix for CI builds running out of memory
@@ -160,4 +160,4 @@ shipkernel
 END=$(date +"%s")
 DIFF=$(( END - START ))
 tg_channelcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)!"
-tg_groupcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! @nysaci"
+tg_groupcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! @reinazhardci"
