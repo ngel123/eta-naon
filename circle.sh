@@ -158,6 +158,7 @@ makekernel || exit 1
 shipkernel
 setnewcam
 setversioning
+clearout
 makekernel || exit 1
 shipkernel
 END=$(date +"%s")
