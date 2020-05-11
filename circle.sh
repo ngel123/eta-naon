@@ -165,7 +165,8 @@ tg_channelcast "Compiler: <code>Avalon Clang</code>" \
 	"Clocked at: <code>$(date +%Y%m%d-%H%M)</code>" \
 	"Latest \
 	"10 Commit: <code>${COMMIT_POINT}</code>" \
-	"For moar cl, check my repo https://github.com/Reinazhard/kranul.git"
+	"For moar cl, check my repo https://github.com/Reinazhard/kranul.git" \
+
 START=$(date +"%s")
 makekernel || exit 1
 shipkernel
