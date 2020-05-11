@@ -169,9 +169,9 @@ tg_channelcast "Compiler: <code>Avalon Clang</code>" \
 START=$(date +"%s")
 makekernel || exit 1
 shipkernel
-setnewcam
 setver2
 clearout
+setnewcam
 makekernel || exit 1
 shipkernel
 END=$(date +"%s")
