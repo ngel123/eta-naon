@@ -141,7 +141,7 @@ clearout() {
 
 #Setver 2 for newcam
 setver2() {
-    KERNELNAME="${KERNEL}-${KERNELRELEASE}-NewCam-$(date +%y%m%d)"
+    KERNELNAME="${KERNEL}-${KERNELRELEASE}-NewCam-${BUILD_DATE}"
     sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
     export KERNELTYPE KERNELNAME
     export TEMPZIPNAME="${KERNELNAME}-unsigned.zip"
@@ -158,7 +158,7 @@ fixcilto() {
 setversioning
 fixcilto
 tg_groupcast "${KERNEL} compilation started at $(date +%Y%m%d-%H%M)!"
-tg_channelcast "Compiler: <code>${COMPILER_STRING}</code>" \
+tg_channelcast "Compiler: <code>Avalon Clang</code>" \
 	"Device: <b>${DEVICE}</b>" \
 	"Kernel: <code>${KERNEL}, release ${KERNELRELEASE}</code>" \
 	"Branch: <code>${PARSE_BRANCH}</code>" \
