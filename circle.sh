@@ -163,7 +163,7 @@ tg_channelcast "Compiler: <code>Avalon Clang</code>" \
 	"Kernel: <code>${KERNEL}, release ${KERNELRELEASE}</code>" \
 	"Branch: <code>${PARSE_BRANCH}</code>" \
 	"Clocked at: <code>$(date +%Y%m%d-%H%M)</code>" \
-	"Latest \
+	"Latest" \
 	"10 Commit: <code>${COMMIT_POINT}</code>" \
 	"For moar cl, check my repo https://github.com/Reinazhard/kranul.git" \
 
