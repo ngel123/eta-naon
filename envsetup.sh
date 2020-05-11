@@ -20,8 +20,8 @@ COMPILER_TYPE='clang'
 # Default to GCC from Arter
 git clone https://github.com/baalajimaestro/arm-maestro-linux-gnueabi.git --depth=1 -b 05022020-9.2.1 "${KERNELDIR}/gcc32"
 git clone https://github.com/baalajimaestro/aarch64-maestro-linux-android.git --depth=1 -b 05022020-9.2.1 "${KERNELDIR}/gcc"
-COMPILER_STRING='GCC 9.x'
-COMPILER_TYPE='GCC9.x'
+COMPILER_STRING='Avalon Clang'
+COMPILER_TYPE='Clang'
 
 export COMPILER_STRING COMPILER_TYPE KERNELDIR SCRIPTS OUTDIR
 
