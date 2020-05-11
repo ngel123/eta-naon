@@ -18,7 +18,7 @@ CIPROVIDER=CircleCI
 KERNELFW=Global
 PARSE_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 PARSE_ORIGIN="$(git config --get remote.origin.url)"
-COMMIT_POINT="$(git log --pretty=format:'%h : %s' -1)"
+COMMIT_POINT="$(git log --pretty=format:'%h : %s' -10)"
 
 #Kearipan Lokal
 export KBUILD_BUILD_USER=reina
@@ -162,8 +162,10 @@ tg_channelcast "Compiler: <code>Avalon Clang</code>" \
 	"Device: <b>${DEVICE}</b>" \
 	"Kernel: <code>${KERNEL}, release ${KERNELRELEASE}</code>" \
 	"Branch: <code>${PARSE_BRANCH}</code>" \
-	"Commit point: <code>${COMMIT_POINT}</code>" \
-	"Clocked at: <code>$(date +%Y%m%d-%H%M)</code>"
+	"Clocked at: <code>$(date +%Y%m%d-%H%M)</code>" \
+	"Latest \
+	"10 Commit: <code>${COMMIT_POINT}</code>" \
+	"For moar cl, check my (repo)[https://github.com/Reinazhard/kranul.git]"
 START=$(date +"%s")
 makekernel || exit 1
 shipkernel
