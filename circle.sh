@@ -129,7 +129,7 @@ shipkernel() {
 setnewcam() {
     export CAMLIBS=NewCam
     # Pick DSP change
-    git remote add sb https://github.com/sreekfreak995/kranul.git
+    git remote add sb https://github.com/Reinazhard/kranul-1.git
     git fetch sb
     git cherry-pick 410f664bef7749f5c77defaf71328e190467e801
 }
