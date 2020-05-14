@@ -99,8 +99,8 @@ makekernel() {
 	    END=$(date +"%s")
 	    DIFF=$(( END - START ))
 	    echo -e "build Failed LMAO !!, See buildlog to fix errors"
-	    tg_channelcast "Build for ${DEVICE} (${KERNELFW}) <b>Failed LMAO</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors!"
-	    tg_groupcast "Build for ${DEVICE} (${KERNELFW}) <b>Failed LMAO</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors @eve_enryu @reinazhardci"
+	    tg_channelcast "BUILD FAILED LMAO!"
+	    tg_groupcast "BUILD FAILED LMAO !! @eve_enryu @reinazhardci"
 	    exit 1
     fi
 }
@@ -159,7 +159,7 @@ fixcilto() {
 ## Start the kernel buildflow ##
 setversioning
 fixcilto
-tg_groupcast "${KERNEL} compilation started at $(date +%Y%m%d-%H%M)!"
+tg_groupcast "Compilation started at $(date +%Y%m%d-%H%M)!"
 tg_channelcast "Compiler: <code>Avalon Clang</code>" \
 	"Device: <b>${DEVICE}</b>" \
 	"Kernel: <code>${KERNEL}, release ${KERNELRELEASE}</code>" \
