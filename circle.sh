@@ -7,7 +7,7 @@
 # CI build script
 
 # Needed exports
-export TELEGRAM_TOKEN=1176154929:AAEwBruEeSm92J2VgHGrLuJroL4oKkd0j-k
+export TELEGRAM_TOKEN=1176154929:AAEwBruEeSm92J2VgHGrLuJroL4oKkd0j-k #Plox dont kang my bot, make ur own
 export ANYKERNEL=$(pwd)/anykernel3
 
 # Avoid hardcoding things
