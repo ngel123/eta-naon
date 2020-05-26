@@ -30,7 +30,7 @@ TG_GROUP=-1001493260868
 
 #Datetime
 DATE=$(TZ=Asia/Jakarta date +"%Y%m%d-%T")
-BUILD_DATE=$(date +"%Y-%m-%d"-%H%M)
+BUILD_DATE=$(TZ=Asia/Jakarta date +"%Y%m%d-%T")
 
 # Clang is annoying
 PATH="${KERNELDIR}/clang/bin:$PATH"
@@ -40,17 +40,10 @@ KERNELRELEASE=HMP
 
 # Function to replace defconfig versioning
 setversioning() {
-    if [[ "${PARSE_BRANCH}" =~ "reina"* ]]; then
     	# For staging branch
-	    KERNELTYPE=Gabut
 	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-OldCam-${BUILD_DATE}"
 	    sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
-    elif [[ "${PARSE_BRANCH}" =~ "reina-newcam"* ]]; then
-	    # For stable (ten) branch
-	    KERNELTYPE=Gabut
-	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-${CAMLIBS}-${BUILD_DATE}"
-        sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
-    fi
+    
     # Export our new localversion and zipnames
     export KERNELTYPE KERNELNAME
     export TEMPZIPNAME="${KERNELNAME}-unsigned.zip"
@@ -160,13 +153,11 @@ fixcilto() {
 setversioning
 fixcilto
 tg_groupcast "Compilation started at $(date +%Y%m%d-%H%M)!"
-tg_channelcast "Compiler: <code>Avalon Clang</code>" \
-	"Device: <b>${DEVICE}</b>" \
+tg_channelcast 
 	"Kernel: <code>${KERNEL}, release ${KERNELRELEASE}</code>" \
-	"Branch: <code>${PARSE_BRANCH}</code>" \
 	"Clocked at: <code>$(date +%Y%m%d-%H%M)</code>" \
 	"Latest Commit: <code>${COMMIT_POINT}</code>" \
-	"For moar cl, check my repo https://github.com/Reinazhard/kranul.git" \
+	"For moar cl, check my repo https://github.com/Reinazhard/kranul.git" 
 
 START=$(date +"%s")
 makekernel || exit 1
