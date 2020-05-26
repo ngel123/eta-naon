@@ -18,7 +18,7 @@ CIPROVIDER=CircleCI
 KERNELFW=Global
 PARSE_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 PARSE_ORIGIN="$(git config --get remote.origin.url)"
-COMMIT_POINT="$(git log --pretty=format:'%h : %s' -10)"
+COMMIT_POINT="$(git log --pretty=format:'%h : %s' -1)"
 
 #Kearipan Lokal
 export KBUILD_BUILD_USER=reina
@@ -92,7 +92,7 @@ makekernel() {
 	    END=$(date +"%s")
 	    DIFF=$(( END - START ))
 	    echo -e "build Failed LMAO !!, See buildlog to fix errors"
-	    tg_channelcast "BUILD FAILED LMAO!"
+	    tg_channelcast "❌Build Failed in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)!"
 	    tg_groupcast "BUILD FAILED LMAO !! @eve_enryu @reinazhardci"
 	    exit 1
     fi
@@ -152,8 +152,8 @@ fixcilto() {
 ## Start the kernel buildflow ##
 setversioning
 fixcilto
-tg_groupcast "Compilation started at $(date +%Y%m%d-%H%M)!"
-tg_channelcast "Kernel: <code>${KERNEL}, release ${KERNELRELEASE}</code>" \
+tg_groupcast "🔨 Compilation started at $(date +%Y%m%d-%H%M)!"
+tg_channelcast "🔨Kernel: <code>${KERNEL}, release ${KERNELRELEASE}</code>" \
 	"Latest Commit: <code>${COMMIT_POINT}</code>" \
 	"For moar cl, check my repo https://github.com/Reinazhard/kranul.git" 
 
@@ -167,5 +167,5 @@ makekernel || exit 1
 shipkernel
 END=$(date +"%s")
 DIFF=$(( END - START ))
-tg_channelcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)!"
+tg_channelcast "✅Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)!"
 tg_groupcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! @reinazhardci"
