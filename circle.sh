@@ -153,9 +153,7 @@ fixcilto() {
 setversioning
 fixcilto
 tg_groupcast "Compilation started at $(date +%Y%m%d-%H%M)!"
-tg_channelcast 
-	"Kernel: <code>${KERNEL}, release ${KERNELRELEASE}</code>" \
-	"Clocked at: <code>$(date +%Y%m%d-%H%M)</code>" \
+tg_channelcast "Kernel: <code>${KERNEL}, release ${KERNELRELEASE}</code>" \
 	"Latest Commit: <code>${COMMIT_POINT}</code>" \
 	"For moar cl, check my repo https://github.com/Reinazhard/kranul.git" 
 
