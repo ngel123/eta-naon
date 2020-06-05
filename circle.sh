@@ -84,11 +84,11 @@ makekernel() {
     rm -rf ${ANYKERNEL}
     git clone https://github.com/Reinazhard/AnyKernel3 -b master anykernel3
     kernelstringfix
-    #export PATH="${KERNELDIR}/clang/bin:$PATH"
-    export CROSS_COMPILE=${KERNELDIR}/gcc/bin/aarch64-linux-gnu-
-    export CROSS_COMPILE_ARM32=${KERNELDIR}/gcc32/bin/arm-maestro-linux-gnueabi-
+    export PATH="${KERNELDIR}/clang/bin:$PATH"
+    #export CROSS_COMPILE=${KERNELDIR}/gcc/bin/aarch64-linux-gnu-
+    #export CROSS_COMPILE_ARM32=${KERNELDIR}/gcc32/bin/arm-maestro-linux-gnueabi-
     make O=out ARCH=arm64 ${DEFCONFIG}
-    make -j$(nproc --all) O=out ARCH=arm64 #CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi-
+    make -j$(nproc --all) O=out ARCH=arm64 CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi-
     # Check if compilation is done successfully.
     if ! [ -f "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb ]; then
 	    END=$(date +"%s")
