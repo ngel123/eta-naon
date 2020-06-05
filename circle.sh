@@ -30,7 +30,7 @@ TG_GROUP=-1001493260868
 
 #Datetime
 DATE=$(TZ=Asia/Jakarta date +"%Y%m%d-%T")
-BUILD_DATE=$(TZ=Asia/Jakarta date +"%Y%m%d-%T")
+BUILD_DATE=$(TZ=Asia/Jakarta date +"%Y%m%d-%H%M")
 
 # Clang is annoying
 PATH="${KERNELDIR}/clang/bin:$PATH"
