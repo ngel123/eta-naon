@@ -20,7 +20,7 @@ OUTDIR=${KERNELDIR}/out
 #COMPILER_TYPE='clang'
 # Default to GCC from Arter
 git clone https://github.com/Haseo97/aarch64-linux-gnu.git --depth=1 "${KERNELDIR}/gcc"
-git clone https://github.com/baalajimaestro/arm-maestro-linux-gnueabi.git --depth=1 -b 27122019 "${KERNELDIR}/gcc32"
+git clone https://github.com/baalajimaestro/arm-maestro-linux-gnueabi.git --depth=1 -b 07032020-9.2.1 "${KERNELDIR}/gcc32"
 COMPILER_STRING='GCC 10'
 COMPILER_TYPE='gcc'
 
