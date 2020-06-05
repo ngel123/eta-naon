@@ -15,10 +15,10 @@ SCRIPTS=${KERNELDIR}/kernelscripts
 OUTDIR=${KERNELDIR}/out
        
 #git clone https://github.com/kdrag0n/proton-clang.git --depth=1 "${KERNELDIR}"/clang
-#git clone https://github.com/Haseo97/Avalon-Clang-11.0.1.git --depth=1 "${KERNELDIR}"/clang
-git clone https://github.com/Panchajanya1999/azure-clang.git --depth=1 "${KERNELDIR}"/clang
+git clone https://github.com/Haseo97/Avalon-Clang-11.0.1.git --depth=1 "${KERNELDIR}"/clang
+#git clone https://github.com/Panchajanya1999/azure-clang.git --depth=1 "${KERNELDIR}"/clang
 #COMPILER_STRING='Proton Clang'
-COMPILER_STRING='Azure Clang'
+COMPILER_STRING='Avalon Clang'
 COMPILER_TYPE='clang'
 # Default to GCC from Arter
 #git clone https://github.com/Haseo97/aarch64-linux-gnu.git --depth=1 "${KERNELDIR}/gcc"
