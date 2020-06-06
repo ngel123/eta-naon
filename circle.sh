@@ -70,6 +70,30 @@ tg_channelcast() {
     )"
 }
 
+paste() {
+    curl -F document=build.log "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendDocument" \
+			-F chat_id="$chat_id" \
+			-F "disable_web_page_preview=true" \
+			-F "parse_mode=html" 
+}
+
+stiker() {
+	curl -s -F chat_id=$chat_id -F sticker="CAACAgQAAx0CWQFaRAACFRle2yGs3_-88DGI9gQHrIc79PXHTQACegUAAqN9MRWn9pNmfKOxqRoE" https://api.telegram.org/bot$TELEGRAM_TOKEN/sendSticker
+	}
+# Stiker Error
+stikerr() {
+	curl -s -F chat_id=$chat_id -F sticker="CAACAgUAAx0CWQFaRAACFR9e2yQ-l-dhDBWlL9HBW9gj59GZswACrAADHKtgNG6kKPh4MGTnGgQ" https://api.telegram.org/bot$TELEGRAM_TOKEN/sendSticker
+	}
+# Fin Error
+finerr() {
+        paste
+        curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendMessage" \
+			-d chat_id="$chat_id" \
+			-d "disable_web_page_preview=true" \
+			-d "parse_mode=markdown" \
+			-d text="Build throw an error(s)"
+}
+
 # Fix long kernel strings
 kernelstringfix() {
     git config --global user.name "Reinazhard"
@@ -96,6 +120,8 @@ makekernel() {
 	    echo -e "build Failed LMAO !!, See buildlog to fix errors"
 	    tg_channelcast "❌Build Failed in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)!"
 	    tg_groupcast "BUILD FAILED LMAO !! @eve_enryu @reinazhardci"
+	    finner
+	    stikker
 	    exit 1
     fi
 }
@@ -169,3 +195,4 @@ END=$(date +"%s")
 DIFF=$(( END - START ))
 tg_channelcast "✅Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)!"
 tg_groupcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! @reinazhardci"
+sticker
