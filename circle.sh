@@ -72,23 +72,23 @@ tg_channelcast() {
 
 paste() {
     curl -F document=build.log "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendDocument" \
-			-F chat_id="$chat_id" \
+			-F chat_id="$CI_CHANNEL" \
 			-F "disable_web_page_preview=true" \
 			-F "parse_mode=html" 
 }
 
 stiker() {
-	curl -s -F chat_id=$chat_id -F sticker="CAACAgQAAx0CWQFaRAACFRle2yGs3_-88DGI9gQHrIc79PXHTQACegUAAqN9MRWn9pNmfKOxqRoE" https://api.telegram.org/bot$TELEGRAM_TOKEN/sendSticker
+	curl -s -F chat_id=$CI_CHANNEL -F sticker="CAACAgQAAx0CWQFaRAACFRle2yGs3_-88DGI9gQHrIc79PXHTQACegUAAqN9MRWn9pNmfKOxqRoE" https://api.telegram.org/bot$TELEGRAM_TOKEN/sendSticker
 	}
 # Stiker Error
 stikerr() {
-	curl -s -F chat_id=$chat_id -F sticker="CAACAgUAAx0CWQFaRAACFR9e2yQ-l-dhDBWlL9HBW9gj59GZswACrAADHKtgNG6kKPh4MGTnGgQ" https://api.telegram.org/bot$TELEGRAM_TOKEN/sendSticker
+	curl -s -F chat_id=$CI_CHANNEL -F sticker="CAACAgUAAx0CWQFaRAACFR9e2yQ-l-dhDBWlL9HBW9gj59GZswACrAADHKtgNG6kKPh4MGTnGgQ" https://api.telegram.org/bot$TELEGRAM_TOKEN/sendSticker
 	}
 # Fin Error
 finerr() {
         paste
         curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendMessage" \
-			-d chat_id="$chat_id" \
+			-d chat_id="$CI_CHANNEL" \
 			-d "disable_web_page_preview=true" \
 			-d "parse_mode=markdown" \
 			-d text="Build throw an error(s)"
