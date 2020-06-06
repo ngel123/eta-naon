@@ -124,9 +124,8 @@ shipkernel() {
 setnewcam() {
     export CAMLIBS=NewCam
     # Pick DSP change
-    git remote add sb https://github.com/Reinazhard/kranul-1.git
-    git fetch sb
-    git cherry-pick 410f664bef7749f5c77defaf71328e190467e801
+    sed -i 's/CONFIG_XIAOMI_NEW_CAMERA_BLOBS=n/CONFIG_XIAOMI_NEW_CAMERA_BLOBS=y/g' arch/arm64/configs/${DEFCONFIG}
+    echo -e "Newcam ready"
 }
 
 # Ship China firmware builds
