@@ -120,7 +120,7 @@ makekernel() {
 	    echo -e "build Failed LMAO !!, See buildlog to fix errors"
 	    tg_channelcast "❌Build Failed in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)!"
 	    tg_groupcast "BUILD FAILED LMAO !! @eve_enryu @reinazhardci"
-	    finner
+	    finerr
 	    stikker
 	    exit 1
     fi
