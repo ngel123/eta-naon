@@ -82,7 +82,7 @@ stiker() {
 	}
 # Stiker Error
 stikerr() {
-	curl -s -F chat_id=$CI_CHANNEL -F sticker="CAACAgUAAx0CWQFaRAACFR9e2yQ-l-dhDBWlL9HBW9gj59GZswACrAADHKtgNG6kKPh4MGTnGgQ" https://api.telegram.org/bot$TELEGRAM_TOKEN/sendSticker
+	curl -s -F chat_id=$CI_CHANNEL -F sticker="CAACAgUAAx0CWJTBcAABAVwjXttFXGel5rpdwQLKS1CVuuWAg5MAAkAAA_yDJT4AASnArwd-VosaBA" https://api.telegram.org/bot$TELEGRAM_TOKEN/sendSticker
 	}
 # Fin Error
 finerr() {
