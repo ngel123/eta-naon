@@ -62,7 +62,7 @@ tg_groupcast() {
 
 # Send to channel
 tg_channelcast() {
-    "${TELEGRAM}" -c "${CI_CHANNEL}" -H \
+    "${TELEGRAM}" -c "${CI_CHANNEL}" -H -D \
     "$(
 		for POST in "${@}"; do
 			echo "${POST}"
@@ -120,8 +120,7 @@ makekernel() {
 	    echo -e "build Failed LMAO !!, See buildlog to fix errors"
 	    tg_channelcast "❌Build Failed in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)!"
 	    tg_groupcast "BUILD FAILED LMAO !! @eve_enryu @reinazhardci"
-	    finerr
-	    stikker
+	    stikerr
 	    exit 1
     fi
 }
@@ -195,4 +194,4 @@ END=$(date +"%s")
 DIFF=$(( END - START ))
 tg_channelcast "✅Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)!"
 tg_groupcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! @reinazhardci"
-sticker
+stiker
