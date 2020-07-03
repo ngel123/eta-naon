@@ -26,7 +26,7 @@ export KBUILD_BUILD_HOST=Laptop-Sangar
 
 # Kernel groups
 CI_CHANNEL=-1001174078190
-TG_GROUP=-1001493260868
+TG_GROUP=-1001167537075
 
 #Datetime
 DATE=$(TZ=Asia/Jakarta date +"%Y%m%d-%T")
