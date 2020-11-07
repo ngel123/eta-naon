@@ -14,7 +14,7 @@ ANYKERNEL="${HOME}"/anykernel
 
 # Repo URL
 CLANG_REPO="https://github.com/Haseo97/Avalon-Clang-11.0.5.git"
-ANYKERNEL_REPO="https://github.com/naonana/AnyKernel3.git"
+ANYKERNEL_REPO="https://github.com/ngel123/any3.git"
 ANYKERNEL_BRANCH="master"
 
 
