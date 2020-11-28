@@ -13,10 +13,12 @@ KERN_DTBO="${KERNEL_DIR}"/out/arch/arm64/boot/dtbo.img
 ANYKERNEL="${HOME}"/anykernel
 
 # Repo URL
-CLANG_REPO="https://github.com/Haseo97/Avalon-Clang-11.0.5.git"
+CLANG_REPO="https://github.com/silont-project/silont-clang.git"
 ANYKERNEL_REPO="https://github.com/ngel123/any3.git"
 ANYKERNEL_BRANCH="master"
-
+export ARCH=arm64
+export KBUILD_BUILD_HOST=draconic
+export KBUILD_BUILD_USER="huril"
 
 # Compiler
 CLANG_DIR="$HOME/proton-clang"
