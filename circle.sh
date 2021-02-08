@@ -13,7 +13,7 @@ KERN_DTBO="${KERNEL_DIR}"/out/arch/arm64/boot/dtbo.img
 ANYKERNEL="${HOME}"/anykernel
 
 # Repo URL
-CLANG_REPO="https://github.com/silont-project/silont-clang.git"
+CLANG_REPO="https://github.com/DroidThug/aarch64-linux-android-gcc-4.9.git"
 ANYKERNEL_REPO="https://github.com/ngel123/any3.git"
 ANYKERNEL_BRANCH="master"
 export ARCH=arm64
